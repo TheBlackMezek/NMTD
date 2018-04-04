@@ -89,4 +89,7 @@ MonoBehaviour:
     type: 2}
   enemyTarget: {fileID: 0}
   spawnInterval: 1
-  startingWaveEnemies: 50
+  spawnSpeedup: 0.9
+  startingWaveEnemies: 10
+  waveEnemyIncrease: 1.2
+  timeBetweenWaves: 5

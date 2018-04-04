@@ -10,15 +10,21 @@ public class GameManager : NetworkBehaviour {
     public GameObject enemyTarget;
 
     public float spawnInterval = 1.0f;
+    public float spawnSpeedup = 0.9f;
     public int startingWaveEnemies = 5;
+    public float waveEnemyIncrease = 1.1f;
+    public float timeBetweenWaves = 5.0f;
 
+    private int lastWaveEnemies;
     private int enemiesInWave;
     private float timer = 0;
+    private int wave = 0;
 
 
     private void Start()
     {
         enemiesInWave = startingWaveEnemies;
+        lastWaveEnemies = enemiesInWave;
     }
 
 
@@ -26,18 +32,22 @@ public class GameManager : NetworkBehaviour {
     {
         timer += Time.deltaTime;
 
-        if(timer >= spawnInterval)
+        if(enemiesInWave <= 0 && timer >= timeBetweenWaves)
         {
             timer = 0;
-
-            if(enemiesInWave > 0)
-            {
-                GameObject e = Instantiate(enemyPrefab);
-                e.transform.position = enemySpawner.transform.position;
-                e.GetComponent<EnemyController>().target = enemyTarget;
-                NetworkServer.Spawn(e);
-                --enemiesInWave;
-            }
+            lastWaveEnemies = (int)(lastWaveEnemies * waveEnemyIncrease);
+            enemiesInWave = lastWaveEnemies;
+            spawnInterval *= spawnSpeedup;
+        }
+        else if(enemiesInWave > 0 && timer >= spawnInterval)
+        {
+            timer = 0;
+            
+            GameObject e = Instantiate(enemyPrefab);
+            e.transform.position = enemySpawner.transform.position;
+            e.GetComponent<EnemyController>().target = enemyTarget;
+            NetworkServer.Spawn(e);
+            --enemiesInWave;
         }
     }
 

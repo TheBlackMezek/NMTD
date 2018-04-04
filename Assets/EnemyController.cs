@@ -15,6 +15,9 @@ public class EnemyController : NetworkBehaviour {
     [SyncVar]
     private float hp;
 
+    private float pathCalcWait = 1.0f;
+    private float timer = 0;
+
 
 
     private void Start()
@@ -24,6 +27,13 @@ public class EnemyController : NetworkBehaviour {
         {
             hp = maxHP;
         }
+        InvokeRepeating("RecalcPath", pathCalcWait, pathCalcWait);
+    }
+
+    private void RecalcPath()
+    {
+        agent.ResetPath();
+        agent.SetDestination(target.transform.position);
     }
 
     private void Update()
@@ -38,9 +48,23 @@ public class EnemyController : NetworkBehaviour {
     public void CmdDamage(float amt)
     {
         hp -= amt;
-
+        
         if(hp <= 0)
         {
+            Destroy(gameObject);
+        }
+    }
+
+    public void Damage(float amt)
+    {
+        CmdDamage(amt);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(isServer && collision.gameObject.tag == "heart")
+        {
+            collision.gameObject.GetComponent<HeartController>().CmdDamage(1);
             Destroy(gameObject);
         }
     }

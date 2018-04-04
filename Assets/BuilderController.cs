@@ -7,6 +7,7 @@ public class BuilderController : NetworkBehaviour {
 
     public float moveSpeed = 5.0f;
     public float yPos = 40.0f;
+    public float turretPersonalSpace = 5.0f;
 
     public Camera cam;
     public AudioListener al;
@@ -59,9 +60,23 @@ public class BuilderController : NetworkBehaviour {
             {
                 if(hit.transform.tag == "turret_placeable")
                 {
-                    GameObject t = Instantiate(turretPrefab);
-                    t.transform.position = hit.point;
-                    NetworkServer.Spawn(t);
+                    bool turretTooClose = false;
+                    RaycastHit[] hits = Physics.SphereCastAll(hit.point, turretPersonalSpace, Vector3.up);
+                    foreach(RaycastHit h in hits)
+                    {
+                        if(h.transform.tag == "turret")
+                        {
+                            turretTooClose = true;
+                            break;
+                        }
+                    }
+
+                    if(!turretTooClose)
+                    {
+                        GameObject t = Instantiate(turretPrefab);
+                        t.transform.position = hit.point;
+                        NetworkServer.Spawn(t);
+                    }
                 }
             }
         }

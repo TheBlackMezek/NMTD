@@ -216,12 +216,11 @@ MonoBehaviour:
   moveSpeed: 500
   jumpForce: 10
   mouseSensitivity: 2
-  dps: 50
+  dps: 100
   cam: {fileID: 20032942719820698}
   ls: {fileID: 81271035337700412}
   cc: {fileID: 143835599993573524}
   lr: {fileID: 120959378540612252}
-  trueLocalPlayer: 0
 --- !u!114 &114861784012106456
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -234,7 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 4
-  m_SendInterval: 0.1
+  m_SendInterval: 0.033333335
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 0

@@ -41,6 +41,7 @@ public class FighterController : NetworkBehaviour {
         lr.SetPosition(0, transform.position - Vector3.up * 0.5f);
         lr.SetPosition(1, lrEnd);
         lr.enabled = lrOn;
+        
 
         if (!isLocalPlayer)
         {
@@ -62,7 +63,7 @@ public class FighterController : NetworkBehaviour {
         
         transform.eulerAngles += new Vector3(0, mx, 0);
         cam.transform.eulerAngles -= new Vector3(my, 0, 0);
-
+        
         
         if (Input.GetMouseButton(0))
         {
@@ -77,17 +78,40 @@ public class FighterController : NetworkBehaviour {
 
                 if (hit.transform.tag == "enemy")
                 {
-                    hit.transform.GetComponent<EnemyController>().CmdDamage(dps * Time.deltaTime);
+                    CmdDamageEnemy(hit.transform.gameObject, dps * Time.deltaTime);
                 }
             }
             else
             {
-                lrEnd = transform.forward * 1000.0f;
+                lrEnd = transform.position + ray.direction * 1000.0f;
             }
         }
         else
         {
             lrOn = false;
+        }
+
+        CmdSetLineRender(lrOn, lrEnd);
+
+        if(transform.position.y < -5.0f)
+        {
+            transform.position = new Vector3(0, 10, 0);
+        }
+    }
+
+    [Command]
+    public void CmdSetLineRender(bool on, Vector3 end)
+    {
+        lrOn = on;
+        lrEnd = end;
+    }
+
+    [Command]
+    public void CmdDamageEnemy(GameObject e, float amt)
+    {
+        if(e != null)
+        {
+            e.GetComponent<EnemyController>().CmdDamage(amt);
         }
     }
 
